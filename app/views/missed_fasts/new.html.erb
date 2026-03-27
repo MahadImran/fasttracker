@@ -1,0 +1,9 @@
+<section class="page-section">
+  <%= link_to "Back", missed_path, class: "back-link" %>
+</section>
+
+<section class="workspace reveal">
+  <p class="eyebrow">Known missed fast</p>
+  <h1 class="page-title">Add an exact date</h1>
+  <%= render "form", missed_fast: @missed_fast %>
+</section>

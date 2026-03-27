@@ -1,0 +1,205 @@
+<section class="workspace history-hero reveal">
+  <div class="hero-copy">
+    <p class="eyebrow">Complete history</p>
+    <h1>See every make-up fast and where it was applied.</h1>
+    <p>
+      This page gives the full audit trail: completed make-up fasts, exact missed dates,
+      and seasonal backlog with allocation context.
+    </p>
+  </div>
+
+  <div class="history-hero-stats">
+    <div class="mini-stat">
+      <span class="summary-label">Logged make-up fasts</span>
+      <strong><%= @makeup_fasts.size %></strong>
+    </div>
+    <div class="mini-stat">
+      <span class="summary-label">Exact missed dates</span>
+      <strong><%= @missed_fasts.size %></strong>
+    </div>
+    <div class="mini-stat">
+      <span class="summary-label">Season backlog entries</span>
+      <strong><%= @ramadan_season_balances.size %></strong>
+    </div>
+  </div>
+</section>
+
+<section class="stack reveal">
+  <article class="list-surface">
+    <p class="eyebrow">Filter history</p>
+    <h2>Search and narrow the timeline</h2>
+    <%= form_with url: history_path, method: :get, class: "history-filters" do |form| %>
+      <div class="field history-search">
+        <%= form.label :query, "Search notes, dates, or season labels" %>
+        <%= form.search_field :query, value: @filters[:query], placeholder: "e.g. travel, 2024, Hijri 1445" %>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <%= form.label :allocation_type, "Make-up allocations" %>
+          <%= form.select :allocation_type, options_for_select([["All allocations", "all"], ["Season backlog only", "season"], ["Exact dates only", "exact"]], @filters[:allocation_type]) %>
+        </div>
+
+        <div class="field">
+          <%= form.label :missed_status, "Missed fast status" %>
+          <%= form.select :missed_status, options_for_select([["All missed fasts", "all"], ["Outstanding only", "outstanding"], ["Satisfied only", "satisfied"]], @filters[:missed_status]) %>
+        </div>
+
+        <div class="field">
+          <%= form.label :backlog_status, "Backlog status" %>
+          <%= form.select :backlog_status, options_for_select([["All backlog entries", "all"], ["Outstanding only", "outstanding"], ["Completed only", "completed"]], @filters[:backlog_status]) %>
+        </div>
+      </div>
+
+      <div class="actions">
+        <%= form.submit "Apply filters" %>
+        <%= link_to "Clear filters", history_path, class: "button button-secondary" %>
+      </div>
+    <% end %>
+  </article>
+
+  <article class="list-surface">
+    <div class="split">
+      <div>
+        <p class="eyebrow">Make-up fast history</p>
+        <h2>Completed fasts and allocations</h2>
+      </div>
+      <%= link_to "Log another make-up fast", new_makeup_fast_path, class: "button-link" %>
+    </div>
+
+    <% if @makeup_fasts.any? %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Fasted on</th>
+            <th>Applied to</th>
+            <th>Why</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @makeup_fasts.each do |makeup_fast| %>
+            <tr>
+              <td>
+                <strong><%= makeup_fast.fasted_on.strftime("%B %-d, %Y") %></strong>
+                <% if makeup_fast.notes.present? %>
+                  <div class="muted"><%= makeup_fast.notes %></div>
+                <% end %>
+              </td>
+              <td><span class="pill"><%= allocation_label(makeup_fast.makeup_allocation) %></span></td>
+              <td class="history-why"><%= allocation_explanation(makeup_fast) %></td>
+              <td>
+                <div class="inline-actions">
+                  <%= link_to "Edit", edit_makeup_fast_path(makeup_fast) %>
+                  <%= button_to "Delete", makeup_fast_path(makeup_fast), method: :delete, form: { data: { turbo_confirm: "Delete this make-up fast log?" } }, class: "button button-secondary" %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="empty">No make-up fasts match the current filters.</div>
+    <% end %>
+  </article>
+
+  <section class="list-grid">
+    <article class="list-surface">
+      <div class="split">
+        <div>
+          <p class="eyebrow">Exact missed dates</p>
+          <h2>Outstanding and satisfied dates</h2>
+        </div>
+        <%= link_to "Add missed fast", new_missed_fast_path %>
+      </div>
+
+      <% if @missed_fasts.any? %>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Allocation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @missed_fasts.each do |missed_fast| %>
+              <tr>
+                <td>
+                  <strong><%= missed_fast.missed_on.strftime("%B %-d, %Y") %></strong>
+                  <% if missed_fast.notes.present? %>
+                    <div class="muted"><%= missed_fast.notes %></div>
+                  <% end %>
+                </td>
+                <td>
+                  <span class="pill <%= "pill-success" if missed_fast.makeup_allocation.present? %>">
+                    <%= missed_fast.makeup_allocation.present? ? "Satisfied" : "Outstanding" %>
+                  </span>
+                </td>
+                <td>
+                  <% if missed_fast.makeup_allocation.present? %>
+                    Covered by make-up fast on <%= missed_fast.makeup_allocation.makeup_fast.fasted_on.strftime("%B %-d, %Y") %>.
+                  <% else %>
+                    Still waiting for allocation.
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="empty">No exact missed dates match the current filters.</div>
+      <% end %>
+    </article>
+
+    <article class="list-surface">
+      <div class="split">
+        <div>
+          <p class="eyebrow">Ramadan season backlog</p>
+          <h2>Season estimates and progress</h2>
+        </div>
+        <%= link_to "Add backlog entry", new_ramadan_season_balance_path %>
+      </div>
+
+      <% if @ramadan_season_balances.any? %>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Season</th>
+              <th>Progress</th>
+              <th>Allocation detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @ramadan_season_balances.each do |balance| %>
+              <tr>
+                <td>
+                  <strong><%= balance.label %></strong>
+                  <% if balance.notes.present? %>
+                    <div class="muted"><%= balance.notes %></div>
+                  <% end %>
+                </td>
+                <td>
+                  <strong><%= balance.remaining_count %></strong> remaining of <%= balance.owed_count %>
+                  <div class="meter">
+                    <span style="width: <%= balance.owed_count.zero? ? 0 : ((balance.allocated_count.to_f / balance.owed_count) * 100).round %>%"></span>
+                  </div>
+                </td>
+                <td>
+                  <% if balance.makeup_allocations.any? %>
+                    Paid down by
+                    <%= balance.makeup_allocations.includes(:makeup_fast).sort_by { |allocation| [allocation.makeup_fast.fasted_on, allocation.makeup_fast.id] }.map { |allocation| allocation.makeup_fast.fasted_on.strftime("%b %-d, %Y") }.join(", ") %>.
+                  <% else %>
+                    No make-up fasts allocated here yet.
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="empty">No seasonal backlog entries match the current filters.</div>
+      <% end %>
+    </article>
+  </section>
+</section>

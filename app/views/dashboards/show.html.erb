@@ -1,0 +1,73 @@
+<section class="workspace workspace-dashboard reveal">
+  <div class="workspace-head">
+    <div>
+      <p class="eyebrow">Progress at a glance</p>
+      <h1 class="page-title"><%= current_user.outstanding_count %> still owed</h1>
+      <p class="lead">Quick log missed and made-up fasts here, then open detail pages when you want the full breakdown.</p>
+    </div>
+
+    <div class="hero-kpi-grid">
+      <div class="hero-kpi">
+        <span class="summary-label">Completion</span>
+        <strong><%= current_user.completion_percentage %>%</strong>
+        <span><%= current_user.completed_count %> of <%= current_user.total_owed_count %> logged</span>
+      </div>
+      <div class="hero-kpi">
+        <span class="summary-label">Next target</span>
+        <strong><%= backlog_target_title(@next_target) %></strong>
+        <span><%= backlog_target_description(@next_target) %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="workspace-band">
+    <article class="flow-panel">
+      <p class="eyebrow">Quick log missed</p>
+      <h2>Add a number only</h2>
+      <p class="muted">This adds to unspecified backlog when you do not want to enter dates yet.</p>
+      <%= form_with url: quick_log_missed_dashboard_path, class: "quick-log-form" do |form| %>
+        <%= form.number_field :count, min: 1, value: @quick_missed_count, required: true, aria: { label: "Missed fast count" } %>
+        <%= form.submit "Add missed", class: "button" %>
+      <% end %>
+    </article>
+
+    <article class="flow-panel">
+      <p class="eyebrow">Quick log made up</p>
+      <h2>Log a number only</h2>
+      <p class="muted">FastTracker uses recent available past dates automatically for this quick shortcut.</p>
+      <%= form_with url: quick_log_makeup_dashboard_path, class: "quick-log-form" do |form| %>
+        <%= form.number_field :count, min: 1, value: @quick_makeup_count, required: true, aria: { label: "Make-up fast count" } %>
+        <%= form.submit "Log made up", class: "button" %>
+      <% end %>
+    </article>
+  </div>
+</section>
+
+<section class="seam-grid reveal">
+  <article class="seam-panel">
+    <div>
+      <p class="eyebrow">Still owed</p>
+      <h2><%= current_user.outstanding_count %> open</h2>
+      <p class="muted"><%= current_user.exact_outstanding_count %> exact dates and <%= current_user.backlog_outstanding_count %> backlog still open.</p>
+    </div>
+    <%= link_to "Open details", owed_path, class: "button button-secondary" %>
+  </article>
+
+  <article class="seam-panel">
+    <div>
+      <p class="eyebrow">Make-up</p>
+      <h2><%= current_user.total_logged_makeup_count %> logged</h2>
+      <p class="muted">See recent activity and log a specific completed fast with its date.</p>
+    </div>
+    <%= link_to "View make-up", makeup_path, class: "button button-secondary" %>
+  </article>
+
+  <article class="seam-panel">
+    <div>
+      <p class="eyebrow">Add missed</p>
+      <h2>Exact dates or backlog</h2>
+      <p class="muted">Update your estimate, add known missed days, or track backlog by Ramadan season.</p>
+    </div>
+    <%= link_to "Add detail", missed_path, class: "button button-secondary" %>
+  </article>
+</section>

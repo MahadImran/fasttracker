@@ -1,0 +1,67 @@
+<section class="landing-hero reveal">
+  <div class="landing-copy">
+    <p class="eyebrow">Ramadan make-up fast tracking</p>
+    <h1>Track your qada fasts in a calmer, clearer rhythm.</h1>
+    <p class="lead">
+      Log what is still owed, record exact missed dates when you know them, and watch each make-up fast
+      settle into place with a dashboard that feels modern and intentional.
+    </p>
+
+    <div class="hero-actions">
+      <%= link_to "Create account", new_registration_path, class: "button" %>
+      <%= button_to "Try demo", demo_session_path, method: :post, class: "button button-secondary button-inline" %>
+      <%= link_to "Sign in", new_session_path, class: "button button-secondary button-compact" %>
+    </div>
+  </div>
+
+  <div class="landing-visual" aria-hidden="true">
+    <div class="moon-disc"></div>
+    <div class="crescent-orbit"></div>
+    <div class="pattern-field"></div>
+    <div class="landing-statband">
+      <div>
+        <span>Track backlog</span>
+        <strong>Exact dates + seasonal estimates</strong>
+      </div>
+      <div>
+        <span>Log progress</span>
+        <strong>Quick counts or full-date entries</strong>
+      </div>
+      <div>
+        <span>Stay oriented</span>
+        <strong>History, allocations, and completion</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="landing-support reveal">
+  <div>
+    <p class="eyebrow">Built for the real flow</p>
+    <h2>Start with one number, then refine as your memory returns.</h2>
+  </div>
+
+  <div class="support-grid">
+    <div>
+      <span class="support-kicker">Dashboard</span>
+      <p>A single workspace for progress, quick logs, and the next open target.</p>
+    </div>
+    <div>
+      <span class="support-kicker">Details</span>
+      <p>Separate exact dates from Ramadan-season backlog without losing the full picture.</p>
+    </div>
+    <div>
+      <span class="support-kicker">History</span>
+      <p>See where each completed fast was applied and how the backlog moved over time.</p>
+    </div>
+  </div>
+</section>
+
+<section class="landing-cta reveal">
+  <p class="eyebrow">Start today</p>
+  <h2>Begin with your own tracker, or explore the sample account first.</h2>
+  <div class="hero-actions">
+    <%= link_to "Create account", new_registration_path, class: "button" %>
+    <%= button_to "Open demo", demo_session_path, method: :post, class: "button button-secondary button-inline" %>
+  </div>
+</section>

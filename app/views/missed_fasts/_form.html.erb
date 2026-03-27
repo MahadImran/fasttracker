@@ -1,0 +1,17 @@
+<%= render "shared/form_errors", record: missed_fast %>
+
+<%= form_with model: missed_fast, class: "stack" do |form| %>
+  <div class="field">
+    <%= form.label :missed_on, "Missed on" %>
+    <%= form.date_field :missed_on, required: true, max: Date.current %>
+  </div>
+
+  <div class="field">
+    <%= form.label :notes %>
+    <%= form.text_area :notes, placeholder: "Optional context, such as travel, illness, or uncertainty about the exact reason." %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit missed_fast.persisted? ? "Update missed fast" : "Add missed fast" %>
+  </div>
+<% end %>

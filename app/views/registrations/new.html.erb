@@ -1,0 +1,38 @@
+<section class="auth-shell reveal">
+  <div class="auth-intro">
+    <p class="eyebrow">Create account</p>
+    <h1 class="page-title">Start your own FastTracker.</h1>
+    <p class="lead">Begin with a private tracker, then record backlog, exact missed dates, and every completed make-up fast in one place.</p>
+    <div class="auth-side-actions">
+      <%= button_to "Explore the demo first", demo_session_path, method: :post, class: "button button-secondary button-inline" %>
+      <%= link_to "Already have an account?", new_session_path, class: "text-link" %>
+    </div>
+  </div>
+
+  <section class="form-surface">
+    <%= render "shared/form_errors", record: @user %>
+
+    <%= form_with model: @user, url: registrations_path, class: "stack" do |form| %>
+      <div class="field">
+        <%= form.label :email_address, "Email" %>
+        <%= form.email_field :email_address, required: true, autofocus: true, placeholder: "you@example.com" %>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <%= form.label :password %>
+          <%= form.password_field :password, required: true, placeholder: "Create a password" %>
+        </div>
+
+        <div class="field">
+          <%= form.label :password_confirmation %>
+          <%= form.password_field :password_confirmation, required: true, placeholder: "Repeat your password" %>
+        </div>
+      </div>
+
+      <div class="actions">
+        <%= form.submit "Create account", class: "button" %>
+      </div>
+    <% end %>
+  </section>
+</section>

@@ -1,0 +1,80 @@
+<section class="page-section">
+  <%= link_to "Back", dashboard_path, class: "back-link" %>
+</section>
+
+<section class="workspace reveal">
+  <p class="eyebrow">Still owed</p>
+  <h1 class="page-title"><%= current_user.outstanding_count %> still open</h1>
+  <p class="lead">A smaller breakdown of what is still left: exact dates first, then open backlog entries.</p>
+</section>
+
+<section class="stats-grid compact-stats reveal">
+  <article class="stat-strip">
+    <p class="eyebrow">Exact dates still open</p>
+    <p class="value"><%= current_user.exact_outstanding_count %></p>
+  </article>
+
+  <article class="stat-strip">
+    <p class="eyebrow">Backlog still open</p>
+    <p class="value"><%= current_user.backlog_outstanding_count %></p>
+  </article>
+</section>
+
+<section class="stack reveal">
+  <article class="list-surface">
+    <div class="split">
+      <div>
+        <p class="eyebrow">Exact dates still open</p>
+        <h2>Known missed dates</h2>
+      </div>
+      <%= link_to "Add exact date", missed_path %>
+    </div>
+
+    <% if @missed_fasts.any? %>
+      <div class="simple-list">
+        <% @missed_fasts.each do |missed_fast| %>
+          <div class="simple-item">
+            <div>
+              <strong><%= missed_fast.missed_on.strftime("%B %-d, %Y") %></strong>
+              <% if missed_fast.notes.present? %>
+                <div class="muted"><%= missed_fast.notes %></div>
+              <% end %>
+            </div>
+            <%= link_to "Edit", edit_missed_fast_path(missed_fast) %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty">No exact missed dates are still open.</div>
+    <% end %>
+  </article>
+
+  <article class="list-surface">
+    <div class="split">
+      <div>
+        <p class="eyebrow">Backlog still open</p>
+        <h2>Ramadan seasons</h2>
+      </div>
+      <%= link_to "Add backlog", missed_path %>
+    </div>
+
+    <% if @ramadan_season_balances.any? %>
+      <div class="simple-list">
+        <% @ramadan_season_balances.each do |balance| %>
+          <div class="simple-item">
+            <div>
+              <strong><%= balance.label %></strong>
+              <div class="muted"><%= balance.remaining_count %> remaining of <%= balance.owed_count %></div>
+              <% if balance.notes.present? %>
+                <div class="muted"><%= balance.notes %></div>
+              <% end %>
+            </div>
+            <%= link_to "Edit", edit_ramadan_season_balance_path(balance) %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty">No backlog entries are still open.</div>
+    <% end %>
+  </article>
+</section>

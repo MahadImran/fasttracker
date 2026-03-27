@@ -1,0 +1,26 @@
+<div class="onboarding-summary">
+  <div>
+    <span class="summary-label">Current total owed</span>
+    <strong><%= current_user.total_owed_count %></strong>
+  </div>
+  <div>
+    <span class="summary-label">Exact dates recorded</span>
+    <strong><%= current_user.missed_fasts.count %></strong>
+  </div>
+  <div>
+    <span class="summary-label">Make-up fasts logged</span>
+    <strong><%= current_user.total_logged_makeup_count %></strong>
+  </div>
+</div>
+
+<%= form_with url: onboarding_path, class: "stack" do |form| %>
+  <div class="field">
+    <%= form.label :owed_count, "Outstanding fasts" %>
+    <%= form.number_field :owed_count, min: 0, value: current_user.outstanding_count.positive? ? current_user.outstanding_count : current_user.total_owed_count, required: true %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Save quick setup" %>
+    <%= link_to "Back to dashboard", dashboard_path, class: "button button-secondary" %>
+  </div>
+<% end %>

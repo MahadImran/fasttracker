@@ -1,0 +1,86 @@
+<section class="page-section">
+  <%= link_to "Back", dashboard_path, class: "back-link" %>
+</section>
+
+<section class="workspace reveal">
+  <p class="eyebrow">Add missed</p>
+  <h1 class="page-title">Estimate first, then add detail when you know it</h1>
+  <p class="lead">Keep the mobile flow simple: start from the number you still owe, then add exact dates or Ramadan-season backlog as needed.</p>
+</section>
+
+<section class="stack reveal">
+  <article class="list-surface">
+    <p class="eyebrow">Estimated backlog</p>
+    <h2>Quick total still owed</h2>
+    <p class="muted">Use this when you only know the total number and want to refine it later.</p>
+    <%= render "onboardings/form" %>
+  </article>
+
+  <article class="list-surface">
+    <p class="eyebrow">Add known missed fast</p>
+    <h2>Known missed dates</h2>
+    <%= render "missed_fasts/form", missed_fast: @missed_fast %>
+  </article>
+
+  <article class="list-surface">
+    <div class="split">
+      <div>
+        <p class="eyebrow">Known missed dates</p>
+        <h2>What is already recorded</h2>
+      </div>
+    </div>
+
+    <% if @missed_fasts.any? %>
+      <div class="simple-list">
+        <% @missed_fasts.each do |missed_fast| %>
+          <div class="simple-item">
+            <div>
+              <strong><%= missed_fast.missed_on.strftime("%B %-d, %Y") %></strong>
+              <div class="muted"><%= missed_fast.makeup_allocation.present? ? "Satisfied" : "Outstanding" %></div>
+              <% if missed_fast.notes.present? %>
+                <div class="muted"><%= missed_fast.notes %></div>
+              <% end %>
+            </div>
+            <%= link_to "Edit", edit_missed_fast_path(missed_fast) %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty">No exact missed dates recorded yet.</div>
+    <% end %>
+  </article>
+
+  <article class="list-surface">
+    <p class="eyebrow">Add backlog by Ramadan season</p>
+    <h2>Separate estimated seasons</h2>
+    <%= render "ramadan_season_balances/form", ramadan_season_balance: @ramadan_season_balance %>
+  </article>
+
+  <article class="list-surface">
+    <div class="split">
+      <div>
+        <p class="eyebrow">Estimated backlog</p>
+        <h2>Current season entries</h2>
+      </div>
+    </div>
+
+    <% if @ramadan_season_balances.any? %>
+      <div class="simple-list">
+        <% @ramadan_season_balances.each do |balance| %>
+          <div class="simple-item">
+            <div>
+              <strong><%= balance.label %></strong>
+              <div class="muted"><%= balance.remaining_count %> remaining of <%= balance.owed_count %></div>
+              <% if balance.notes.present? %>
+                <div class="muted"><%= balance.notes %></div>
+              <% end %>
+            </div>
+            <%= link_to "Edit", edit_ramadan_season_balance_path(balance) %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty">No backlog entries yet.</div>
+    <% end %>
+  </article>
+</section>

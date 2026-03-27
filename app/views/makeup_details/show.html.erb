@@ -1,0 +1,62 @@
+<section class="page-section">
+  <%= link_to "Back", dashboard_path, class: "back-link" %>
+</section>
+
+<section class="workspace reveal">
+  <p class="eyebrow">Make-up</p>
+  <h1 class="page-title">Recent activity and full-date logging</h1>
+  <p class="lead">Use this page when you want exact make-up dates instead of the quick numeric shortcut.</p>
+</section>
+
+<section class="stats-grid compact-stats reveal">
+  <article class="stat-strip">
+    <p class="eyebrow">Logged</p>
+    <p class="value"><%= current_user.total_logged_makeup_count %></p>
+  </article>
+
+  <article class="stat-strip">
+    <p class="eyebrow">Still owed</p>
+    <p class="value"><%= current_user.outstanding_count %></p>
+  </article>
+</section>
+
+<section class="stack reveal">
+  <article class="list-surface">
+    <p class="eyebrow">Log a make-up fast</p>
+    <h2>Fasted on</h2>
+    <%= render "makeup_fasts/form", makeup_fast: @makeup_fast %>
+  </article>
+
+  <article class="list-surface">
+    <div class="split">
+      <div>
+        <p class="eyebrow">Recent activity</p>
+        <h2>Make-up fasts logged</h2>
+      </div>
+      <%= link_to "Full history", history_path %>
+    </div>
+
+    <% if @recent_makeup_fasts.any? %>
+      <div class="simple-list">
+        <% @recent_makeup_fasts.each do |makeup_fast| %>
+          <div class="simple-item">
+            <div>
+              <strong><%= makeup_fast.fasted_on.strftime("%B %-d, %Y") %></strong>
+              <div class="muted"><%= allocation_label(makeup_fast.makeup_allocation) %></div>
+              <% if makeup_fast.notes.present? %>
+                <div class="muted"><%= makeup_fast.notes %></div>
+              <% end %>
+            </div>
+
+            <div class="inline-actions">
+              <%= link_to "Edit", edit_makeup_fast_path(makeup_fast) %>
+              <%= button_to "Delete", makeup_fast_path(makeup_fast), method: :delete, form: { data: { turbo_confirm: "Delete this make-up fast log?" } }, class: "button button-secondary" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty">No make-up fasts logged yet.</div>
+    <% end %>
+  </article>
+</section>

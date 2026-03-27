@@ -1,0 +1,17 @@
+<%= render "shared/form_errors", record: makeup_fast %>
+
+<%= form_with model: makeup_fast, class: "stack" do |form| %>
+  <div class="field">
+    <%= form.label :fasted_on, "Fasted on" %>
+    <%= form.date_field :fasted_on, required: true, max: Date.current %>
+  </div>
+
+  <div class="field">
+    <%= form.label :notes %>
+    <%= form.text_area :notes, placeholder: "Optional context, such as whether it was Mondays/Thursdays or a day off work." %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit makeup_fast.persisted? ? "Update make-up fast" : "Log make-up fast" %>
+  </div>
+<% end %>

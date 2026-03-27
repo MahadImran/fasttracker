@@ -1,0 +1,34 @@
+<%= render "shared/form_errors", record: ramadan_season_balance %>
+
+<%= form_with model: ramadan_season_balance, class: "stack", data: { controller: "ramadan-year" } do |form| %>
+  <% current_gregorian_year = Date.current.year %>
+  <% current_hijri_year = RamadanSeasonBalance.current_hijri_year %>
+  <% gregorian_year_value = ramadan_season_balance.gregorian_year || Date.current.year %>
+  <% hijri_year_value = ramadan_season_balance.hijri_year || current_hijri_year %>
+  <div class="form-grid">
+    <div class="field">
+      <%= form.label :gregorian_year, "Gregorian year" %>
+      <%= form.number_field :gregorian_year, min: 1901, max: current_gregorian_year, value: gregorian_year_value, placeholder: "e.g. 2024", data: { ramadan_year_target: "gregorian", action: "input->ramadan-year#syncFromGregorian" } %>
+    </div>
+
+    <div class="field">
+      <%= form.label :hijri_year, "Hijri year" %>
+      <%= form.number_field :hijri_year, min: 1301, max: current_hijri_year, value: hijri_year_value, placeholder: "e.g. 1445", data: { ramadan_year_target: "hijri", action: "input->ramadan-year#syncFromHijri" } %>
+      <div class="field-hint">Either year can auto-fill the other. You can still adjust either one manually.</div>
+    </div>
+
+    <div class="field">
+      <%= form.label :owed_count, "Fasts owed" %>
+      <%= form.number_field :owed_count, min: 0, required: true %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= form.label :notes, "Notes or rationale" %>
+    <%= form.text_area :notes, placeholder: "Use this for an unspecified backlog entry, estimation rationale, or anything you want to remember later." %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit ramadan_season_balance.persisted? ? "Update backlog entry" : "Add backlog entry" %>
+  </div>
+<% end %>

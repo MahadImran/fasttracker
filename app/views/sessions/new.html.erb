@@ -1,0 +1,30 @@
+<section class="auth-shell reveal">
+  <div class="auth-intro">
+    <p class="eyebrow">Sign in</p>
+    <h1 class="page-title">Return to your tracker.</h1>
+    <p class="lead">Pick up your Ramadan log where you left it, or open the demo to preview the full experience.</p>
+
+    <div class="auth-side-actions">
+      <%= button_to "Open demo tracker", demo_session_path, method: :post, class: "button button-secondary button-inline" %>
+      <%= link_to "Create account", new_registration_path, class: "text-link" %>
+    </div>
+  </div>
+
+  <section class="form-surface">
+    <%= form_with url: session_path, class: "stack" do |form| %>
+      <div class="field">
+        <%= form.label :email_address, "Email" %>
+        <%= form.email_field :email_address, required: true, autofocus: true, placeholder: "you@example.com" %>
+      </div>
+
+      <div class="field">
+        <%= form.label :password %>
+        <%= form.password_field :password, required: true, placeholder: "Your password" %>
+      </div>
+
+      <div class="actions">
+        <%= form.submit "Sign in", class: "button" %>
+      </div>
+    <% end %>
+  </section>
+</section>
