@@ -7,7 +7,7 @@ services:
     branch: main
     autoDeployTrigger: checksPass
     healthCheckPath: /up
-    dockerCommand: ./bin/rails server
+    dockerCommand: ./bin/docker-entrypoint ./bin/rails server
     envVars:
       - key: DATABASE_URL
         sync: false
