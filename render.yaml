@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: fasttracker-mahad
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    autoDeployTrigger: checksPass
+    healthCheckPath: /up
+    dockerCommand: ./bin/rails server
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      - key: RAILS_ASSUME_SSL
+        value: "true"
+      - key: WEB_CONCURRENCY
+        value: "0"

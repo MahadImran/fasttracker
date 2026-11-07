@@ -25,7 +25,11 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  # config.assume_ssl = true
+  config.assume_ssl = ENV["RAILS_ASSUME_SSL"] == "true"
+
+  if ENV["RENDER"] == "true" && ENV["DATABASE_URL"].blank?
+    raise "DATABASE_URL is required on Render"
+  end
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
@@ -46,19 +50,22 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Replace the default in-process memory cache store with a durable alternative.
-  config.cache_store = :solid_cache_store
-
-  # Replace the default in-process and non-durable queuing backend for Active Job.
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
+  if ENV["DATABASE_URL"].present?
+    # The hosted app uses one web process and has no background workers.
+    config.cache_store = :memory_store
+    config.active_job.queue_adapter = :async
+  else
+    config.cache_store = :solid_cache_store
+    config.active_job.queue_adapter = :solid_queue
+    config.solid_queue.connects_to = { database: { writing: :queue } }
+  end
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates and generated URLs.
-  config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "fasttracker.mahadimran.me") }
+  config.action_mailer.default_url_options = { host: ENV["APP_HOST"] || ENV["RENDER_EXTERNAL_HOSTNAME"] || "fasttracker.mahadimran.me" }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   # config.action_mailer.smtp_settings = {
